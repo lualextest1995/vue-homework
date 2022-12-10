@@ -7,53 +7,53 @@
         <input
           list="store"
           placeholder="placeholder text"
-          v-model="storeValue"
+          v-model="storeInfo.value"
           ref="storeRef"
         />
         <datalist id="store">
-          <option v-for="data in datalist" :key="data" :value="data">
+          <option v-for="data in storeInfo.datalist" :key="data" :value="data">
             {{ data }}
           </option>
         </datalist>
-        <p class="error" v-show="storeError">{{ storeError }}</p>
+        <p class="error" v-show="storeInfo.error">{{ storeInfo.error }}</p>
       </InputComponent>
       <InputComponent item="name">
         <input
           type="text"
           id="name"
           placeholder="placeholder text"
-          v-model="nameValue"
+          v-model="nameInfo.value"
           ref="nameRef"
         />
-        <p class="error" v-show="nameError">{{ nameError }}</p>
+        <p class="error" v-show="nameInfo.error">{{ nameInfo.error }}</p>
       </InputComponent>
       <InputComponent item="phone">
         <input
           type="text"
           id="phone"
           placeholder="placeholder text"
-          v-model="phoneValue"
+          v-model="phoneInfo.value"
           ref="phoneRef"
         />
-        <p class="error" v-show="phoneError">{{ phoneError }}</p>
+        <p class="error" v-show="phoneInfo.error">{{ phoneInfo.error }}</p>
       </InputComponent>
       <InputComponent item="Amount of consumption">
         <input
           type="text"
           id="Amount of consumption"
           placeholder="placeholder text"
-          v-model="amountValue"
+          v-model="amountInfo.value"
           ref="amountRef"
         />
-        <p class="error" v-show="amountError">{{ amountError }}</p>
+        <p class="error" v-show="amountInfo.error">{{ amountInfo.error }}</p>
       </InputComponent>
       <InputComponent item="payment">
-        <select id="payment" v-model="paymentValue" ref="paymentRef">
+        <select id="payment" v-model="paymentInfo.value" ref="paymentRef">
           <option value="" disabled>placeholder text</option>
           <option value="digital payment">digital payment</option>
           <option value="ATM">ATM</option>
         </select>
-        <p class="error" v-show="paymentError">{{ paymentError }}</p>
+        <p class="error" v-show="paymentInfo.error">{{ paymentInfo.error }}</p>
       </InputComponent>
     </div>
     <div class="btnBox">
@@ -69,95 +69,105 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, reactive, watch } from "vue";
 import InputComponent from "./InputComponent.vue";
 export default {
   name: "FormComponent",
   components: { InputComponent },
   setup() {
-    const storeValue = ref("");
+    const storeInfo = reactive({
+      value: "",
+      error: null,
+      datalist: ["store1", "store2", "store3", "store4"],
+    });
     const storeRef = ref(null);
-    const storeError = ref(null);
-    const datalist = ref(["store1", "store2", "store3", "store4"]);
-    const nameValue = ref("");
+    const nameInfo = reactive({
+      value: "",
+      error: null,
+    });
     const nameRef = ref(null);
-    const nameError = ref(null);
-    const phoneValue = ref("");
+    const phoneInfo = reactive({
+      value: "",
+      error: null,
+    });
     const phoneRef = ref(null);
-    const phoneError = ref(null);
-    const amountValue = ref("");
+    const amountInfo = reactive({
+      value: "",
+      error: null,
+    });
     const amountRef = ref(null);
-    const amountError = ref(null);
-    const paymentValue = ref("digital payment");
+    const paymentInfo = reactive({
+      value: "digital payment",
+      error: null,
+    });
     const paymentRef = ref(null);
-    const paymentError = ref(null);
     const btnState = ref(0);
 
     //監控store
-    watch(storeValue, (val) => {
-      if (val === "") {
-        storeError.value = "required";
+    watch(storeInfo, (val) => {
+      if (val.value.trim() === "") {
+        storeInfo.error = "required";
         storeRef.value.style = "outline: 3px solid #E06D6D";
-      } else if (!datalist.value.includes(val)) {
-        storeError.value = "not result";
+      } else if (!storeInfo.datalist.includes(val.value)) {
+        storeInfo.error = "not result";
         storeRef.value.style = "outline: 3px solid #E06D6D";
       } else {
-        storeError.value = null;
+        storeInfo.error = null;
         storeRef.value.style = "";
       }
     });
     //監控name
-    watch(nameValue, (val) => {
-      if (val === "") {
-        nameError.value = "required";
+    watch(nameInfo, (val) => {
+      if (val.value.trim() === "") {
+        nameInfo.error = "required";
         nameRef.value.style = "outline: 3px solid #E06D6D";
       } else if (
-        nameValue.value.trim() ===
-        nameValue.value.replace(/^[\u4e00-\u9fa5a-zA-Z]+$/)
+        nameInfo.value.trim() ===
+        nameInfo.value.replace(/^[\u4e00-\u9fa5a-zA-Z]+$/)
       ) {
-        nameError.value = "wrong format";
+        nameInfo.error = "wrong format";
         nameRef.value.style = "outline: 3px solid #E06D6D";
       } else {
-        nameError.value = null;
+        nameInfo.error = null;
         nameRef.value.style = "";
       }
     });
     //監控phone
-    watch(phoneValue, (val) => {
-      if (val === "") {
-        phoneError.value = "required";
+    watch(phoneInfo, (val) => {
+      if (val.value.trim() === "") {
+        phoneInfo.error = "required";
         phoneRef.value.style = "outline: 3px solid #E06D6D";
       } else if (
-        phoneValue.value.trim() === phoneValue.value.replace(/^09[0-9]{8}$/)
+        phoneInfo.value.trim() === phoneInfo.value.replace(/^09[0-9]{8}$/)
       ) {
-        phoneError.value = "wrong format";
+        phoneInfo.error = "wrong format";
         phoneRef.value.style = "outline: 3px solid #E06D6D";
       } else {
-        phoneError.value = null;
+        phoneInfo.error = null;
         phoneRef.value.style = "";
       }
     });
     //監控Amount of consumption
-    watch(amountValue, (val) => {
-      if (val === "") {
-        amountError.value = "required";
+    watch(amountInfo, (val) => {
+      if (val.value.trim() === "") {
+        amountInfo.error = "required";
         amountRef.value.style = "outline: 3px solid #E06D6D";
       } else if (
-        amountValue.value.trim() !== amountValue.value.replace(/[^\d]/g, "")
+        amountInfo.value.trim() !== amountInfo.value.replace(/[^\d]/g, "")
       ) {
-        amountError.value = "wrong format";
+        amountInfo.error = "wrong format";
         amountRef.value.style = "outline: 3px solid #E06D6D";
       } else {
-        amountError.value = null;
+        amountInfo.error = null;
         amountRef.value.style = "";
       }
       //監控payment
-      watch(paymentValue, (val) => {
-        if (val === "") {
-          paymentError.value = "required";
+      watch(paymentInfo, (val) => {
+        if (val.value.trim() === "") {
+          paymentInfo.error = "required";
           paymentRef.value.style = "outline: 3px solid #E06D6D";
         } else {
-          paymentError.value = null;
+          paymentInfo.error = null;
           paymentRef.value.style = "";
         }
       });
@@ -166,58 +176,52 @@ export default {
     function check() {
       btnState.value = 2;
       //檢查store
-      if (storeValue.value.trim() === "") {
-        storeError.value = "required";
+      if (storeInfo.value.trim() === "") {
+        storeInfo.error = "required";
         storeRef.value.style = "outline: 3px solid #E06D6D";
       }
       //檢查name
-      if (nameValue.value.trim() === "") {
-        nameError.value = "required";
+      if (nameInfo.value.trim() === "") {
+        nameInfo.error = "required";
         nameRef.value.style = "outline: 3px solid #E06D6D";
       }
       //檢查phone
-      if (phoneValue.value.trim() === "") {
-        phoneError.value = "required";
+      if (phoneInfo.value.trim() === "") {
+        phoneInfo.error = "required";
         phoneRef.value.style = "outline: 3px solid #E06D6D";
       }
       //檢查Amount of consumption
-      if (amountValue.value.trim() === "") {
-        amountError.value = "required";
+      if (amountInfo.value.trim() === "") {
+        amountInfo.error = "required";
         amountRef.value.style = "outline: 3px solid #E06D6D";
       }
       //檢查payment
-      if (paymentValue.value.trim() === "") {
-        paymentError.value = "required";
+      if (paymentInfo.value.trim() === "") {
+        paymentInfo.error = "required";
         paymentRef.value.style = "outline: 3px solid #E06D6D";
       }
 
       if (
-        storeError.value === null &&
-        nameError.value === null &&
-        phoneError.value === null &&
-        amountError.value === null &&
-        paymentError.value === null
+        storeInfo.error === null &&
+        nameInfo.error === null &&
+        phoneInfo.error === null &&
+        amountInfo.error === null &&
+        paymentInfo.error === null
       ) {
         btnState.value = 1;
       }
     }
     return {
-      storeValue,
+      storeInfo,
       storeRef,
-      storeError,
-      datalist,
-      nameValue,
+      nameInfo,
       nameRef,
-      nameError,
-      phoneValue,
+      phoneInfo,
       phoneRef,
-      phoneError,
-      amountValue,
+      amountInfo,
       amountRef,
-      amountError,
-      paymentValue,
+      paymentInfo,
       paymentRef,
-      paymentError,
       btnState,
       check,
     };
